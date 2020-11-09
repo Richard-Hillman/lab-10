@@ -1,11 +1,30 @@
 require('dotenv').config();
-require('./lib/client').connect();
 
-const app = require('./lib/app');
 
-const PORT = process.env.PORT || 7890;
+const express = require('express');
+const cors = require('cors');
+const request = require('superagent');
+const app = express();
+const PORT = 3000;
+const geoData = require('./data/geo.json');
+
+const mungedData = geoMunge(geoData);
+
+app.use(cors());
+
+app.get('/', async(req, res) => {
+  // const URL ='';
+  res.json(mungedData);
+
+  const response = await request.get(URL);
+  res.json(response.body);
+});
 
 app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Started on ${PORT}`);
+  console.log(`Example app listening at http://localhost:${PORT}`);
 });
+
+
+function geoMunge(geoData) {
+  return geoData;
+}
