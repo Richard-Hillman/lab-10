@@ -1,64 +1,44 @@
 require('dotenv').config();
 
-const { execSync } = require('child_process');
+const { mungeLocation } = require('../utils.js');
 
-const fakeRequest = require('supertest');
-const app = require('../lib/app');
-const client = require('../lib/client');
+
 
 describe('app routes', () => {
   describe('routes', () => {
-    let token;
   
-    beforeAll(async done => {
-      execSync('npm run setup-db');
-  
-      client.connect();
-  
-      const signInData = await fakeRequest(app)
-        .post('/auth/signup')
-        .send({
-          email: 'jon@user.com',
-          password: '1234'
-        });
-      
-      token = signInData.body.token;
-  
-      return done();
+    test('compares munged function to original data', async() => {
+    
+      const location = [
+        {
+          'place_id': '236166092',
+          'licence': 'https://locationiq.com/attribution',
+          'osm_type': 'relation',
+          'osm_id': '134699',
+          'boundingbox': [
+            '42.8524425',
+            '42.885961',
+            '-84.940167',
+            '-84.867058'
+          ],
+          'lat': '42.8692006',
+          'lon': '-84.9030517',
+          'display_name': 'Portland, Ionia County, Michigan, USA',
+          'class': 'boundary',
+          'type': 'administrative',
+          'importance': 0.47680090174386,
+          'icon': 'https://locationiq.org/static/images/mapicons/poi_boundary_administrative.p.20.png'
+        },
+      ];
+
+      const expectation = {
+        formatted_query: 'Portland, Ionia County, Michigan, USA',
+        latitude: '42.8692006',
+        longitude: '-84.9030517',
+      };
+
+      const result = mungeLocation(location);
+      expect(result).toEqual(expectation);
     });
-  
-    afterAll(done => {
-      return client.end(done);
-    });
-
-  test('returns animals', async() => {
-
-    const expectation = [
-      {
-        'id': 1,
-        'name': 'bessie',
-        'coolfactor': 3,
-        'owner_id': 1
-      },
-      {
-        'id': 2,
-        'name': 'jumpy',
-        'coolfactor': 4,
-        'owner_id': 1
-      },
-      {
-        'id': 3,
-        'name': 'spot',
-        'coolfactor': 10,
-        'owner_id': 1
-      }
-    ];
-
-    const data = await fakeRequest(app)
-      .get('/animals')
-      .expect('Content-Type', /json/)
-      .expect(200);
-
-    expect(data.body).toEqual(expectation);
   });
 });
