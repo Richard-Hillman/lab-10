@@ -9,7 +9,7 @@ function mungeLocation(location) {
 // ----------------------------------------------
 
 function mungeWeather(location) {
-  location.data.map(item => {
+  return location.data.map(item => {
     return {
       forecast: item.weather.description,
       time: item.datetime,
