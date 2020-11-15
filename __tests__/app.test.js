@@ -1,6 +1,7 @@
 require('dotenv').config();
-
-const { mungeLocation, mungeWeather } = require('../utils.js');
+const trails = require('../data/trails.json');
+// const rawYelpData = require('../data/reviews.json');
+const { mungeLocation, mungeWeather, mungeHiker } = require('../utils.js');
 
 
 
@@ -105,6 +106,30 @@ describe('app routes', () => {
 
       expect(result).toEqual(expectation);
     });
+
+    // -------------------------------------------------------------
+
+    test('returns trails that have been munged', async() => {
+      const expectation = [
+        {
+          'conditions': 'All Clear',
+          'condition_date': '2020-09-16',
+          'condition_time': '14:37:11',
+          'length': 17.3,
+          'location': 'Superior, Colorado',
+          'name': 'Boulder Skyline Traverse',
+          'star_votes': 93,
+          'stars': 4.7,
+          'summary': 'The classic long mountain route in Boulder.',
+          'trail_url': 'https://www.hikingproject.com/trail/7011192/boulder-skyline-traverse',
+        }
+      ];
+
+      const result = mungeHiker(trails);
+      expect(result).toEqual(expectation);
+    });
+  
+    // -----------------------------------------------------------------------
 
   });
 });
