@@ -1,7 +1,7 @@
 require('dotenv').config();
 const trails = require('../data/trails.json');
-// const rawYelpData = require('../data/reviews.json');
-const { mungeLocation, mungeWeather, mungeHiker } = require('../utils.js');
+const yelpData = require('../data/yelp.json');
+const { mungeLocation, mungeWeather, mungeHiker, mungeYelp } = require('../utils.js');
 
 
 
@@ -130,6 +130,23 @@ describe('app routes', () => {
     });
   
     // -----------------------------------------------------------------------
+
+
+    test('returns munged yelp test', async() => {
+      const expectation = [
+        {
+          'image_url': 'https://s3-media3.fl.yelpcdn.com/bphoto/9m-lciDcKbAOAvhh0uWAvw/o.jpg',
+          'name': 'Luc Lac',
+          'price': '$$',
+          'rating': 4,
+          'url': 'https://www.yelp.com/biz/luc-lac-portland-7?adjust_creative=DnJ3-HKKi6PqWA78lrKWsg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=DnJ3-HKKi6PqWA78lrKWsg',
+        },
+      ];
+
+      const result = mungeYelp(yelpData);
+      expect(result).toEqual(expectation);
+    });
+
 
   });
 });
